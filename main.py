@@ -1,24 +1,24 @@
-import json
 import os
 import pika
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import BasicProperties, Basic
 
-from resolver.resolver import Resolver
+from resolver.message_resolver import MessageResolver
+from utility.custom_logger import root_logger
 
 
 def callback(
     ch: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, body: bytes
 ):
+    root_logger.trace(
+        f"Received message: {body = },\n"
+        f"{ch = },\n"
+        f"{method = },\n"
+        f"{properties = },"
+    )
     # Обработка полученного сообщения
     message = body.decode("utf-8")
     resolver.resolve(message)
-    print(
-        f"Received message: {body = },\n"
-        f"{ch = }, {ch}\n"
-        f"{method = }, {method.delivery_tag = }\n"
-        f"{properties = } {properties.user_id = }"
-    )
 
 
 if __name__ == "__main__":
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     # Создание очереди для получения сообщений
     channel.queue_declare(queue=rabbit_queue)
-    resolver = Resolver()
+    resolver = MessageResolver()
     # Установка callback функции для обработки полученных сообщений
     channel.basic_consume(
         queue=rabbit_queue, on_message_callback=callback, auto_ack=True

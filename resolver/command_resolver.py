@@ -3,7 +3,7 @@ import json
 from utility.custom_logger import root_logger
 
 
-class Resolver:
+class CommandResolver:
     def __init__(self):
         pass
 

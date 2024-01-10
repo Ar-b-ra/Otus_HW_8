@@ -3,6 +3,7 @@ import pika
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import BasicProperties, Basic
 
+from resolver.command_resolver import CommandResolver
 from resolver.message_resolver import MessageResolver
 from utility.custom_logger import root_logger
 
@@ -34,7 +35,8 @@ if __name__ == "__main__":
 
     # Создание очереди для получения сообщений
     channel.queue_declare(queue=rabbit_queue)
-    resolver = MessageResolver()
+    command_resolver = CommandResolver()
+    resolver = MessageResolver(command_resolver)
     # Установка callback функции для обработки полученных сообщений
     channel.basic_consume(
         queue=rabbit_queue, on_message_callback=callback, auto_ack=True

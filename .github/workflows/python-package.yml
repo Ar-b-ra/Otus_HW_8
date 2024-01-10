@@ -13,9 +13,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: rabbitmq:latest
     strategy:
       fail-fast: false
       matrix:
